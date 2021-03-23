@@ -6,16 +6,18 @@ import requests
 import threading
 import time
 import traceback
+from pathlib import Path
 
 from cereal import log
 import cereal.messaging as messaging
 from common.api import Api
 from common.params import Params
+from selfdrive.hardware import TICI
 from selfdrive.loggerd.xattr_cache import getxattr, setxattr
 from selfdrive.loggerd.config import ROOT
 from selfdrive.swaglog import cloudlog
 
-NetworkType = log.ThermalData.NetworkType
+NetworkType = log.DeviceState.NetworkType
 UPLOAD_ATTR_NAME = 'user.upload'
 UPLOAD_ATTR_VALUE = b'1'
 
@@ -198,13 +200,16 @@ def uploader_fn(exit_event):
     cloudlog.info("uploader missing dongle_id")
     raise Exception("uploader can't start without dongle id")
 
-  sm = messaging.SubMaster(['thermal'])
+  if TICI and not Path("/data/media").is_mount():
+    cloudlog.debug("NVME not mounted")
+
+  sm = messaging.SubMaster(['deviceState'])
   uploader = Uploader(dongle_id, ROOT)
 
   backoff = 0.1
   while not exit_event.is_set():
     sm.update(0)
-    on_wifi = force_wifi or sm['thermal'].networkType == NetworkType.wifi
+    on_wifi = force_wifi or sm['deviceState'].networkType == NetworkType.wifi
     offroad = params.get("IsOffroad") == b'1'
     allow_raw_upload = params.get("IsUploadRawEnabled") != b"0"
 

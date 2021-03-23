@@ -259,11 +259,17 @@ OmxEncoder::OmxEncoder(const char* filename, int width, int height, int fps, int
     avc.nBFrames = 0;
     avc.nPFrames = 15;
 
-    avc.eProfile = OMX_VIDEO_AVCProfileBaseline;
+    avc.eProfile = OMX_VIDEO_AVCProfileHigh;
     avc.eLevel = OMX_VIDEO_AVCLevel31;
 
     avc.nAllowedPictureTypes |= OMX_VIDEO_PictureTypeB;
     avc.eLoopFilterMode = OMX_VIDEO_AVCLoopFilterEnable;
+
+    avc.nRefFrames = 1;
+    avc.bUseHadamard = OMX_TRUE;
+    avc.bEntropyCodingCABAC = OMX_TRUE;
+    avc.bWeightedPPrediction = OMX_TRUE;
+    avc.bconstIpred = OMX_TRUE;
 
     OMX_CHECK(OMX_SetParameter(this->handle, OMX_IndexParamVideoAvc, &avc));
   }
@@ -343,12 +349,10 @@ void OmxEncoder::handle_out_buf(OmxEncoder *e, OMX_BUFFERHEADERTYPE *out_buf) {
 
   if (e->remuxing) {
     if (!e->wrote_codec_config && e->codec_config_len > 0) {
-      if (e->codec_ctx->extradata_size < e->codec_config_len) {
-        e->codec_ctx->extradata = (uint8_t *)realloc(e->codec_ctx->extradata, e->codec_config_len + AV_INPUT_BUFFER_PADDING_SIZE);
-      }
+      // extradata will be freed by av_free() in avcodec_free_context()
+      e->codec_ctx->extradata = (uint8_t*)av_mallocz(e->codec_config_len + AV_INPUT_BUFFER_PADDING_SIZE);
       e->codec_ctx->extradata_size = e->codec_config_len;
       memcpy(e->codec_ctx->extradata, e->codec_config, e->codec_config_len);
-      memset(e->codec_ctx->extradata + e->codec_ctx->extradata_size, 0, AV_INPUT_BUFFER_PADDING_SIZE);
 
       err = avcodec_parameters_from_context(e->out_stream->codecpar, e->codec_ctx);
       assert(err >= 0);
