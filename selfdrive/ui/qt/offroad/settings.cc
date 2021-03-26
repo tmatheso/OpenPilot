@@ -50,13 +50,17 @@ QWidget * toggles_panel() {
                                             "Use features from the open source community that are not maintained or supported by comma.ai and have not been confirmed to meet the standard safety model. These features include community supported cars and community supported hardware. Be extra cautious when using these features",
                                             "../assets/offroad/icon_shell.png"
                                             ));
-
+  toggles_list->addWidget(horizontal_line());
   ParamControl *record_toggle = new ParamControl("RecordFront",
                                             "Record and Upload Driver Camera",
                                             "Upload data from the driver facing camera and help improve the driver monitoring algorithm.",
                                             "../assets/offroad/icon_network.png");
-  toggles_list->addWidget(horizontal_line());
   toggles_list->addWidget(record_toggle);
+  toggles_list->addWidget(horizontal_line());
+  toggles_list->addWidget(new ParamControl("EndToEndToggle",
+                                           "\U0001f96c Disable use of lanelines (Alpha) \U0001f96c",
+                                           "In this mode openpilot will ignore lanelines and just drive how it thinks a human would.",
+                                           "../assets/offroad/icon_road.png"));
 
   bool record_lock = Params().read_db_bool("RecordFrontLock");
   record_toggle->setEnabled(!record_lock);
@@ -101,6 +105,17 @@ DevicePanel::DevicePanel(QWidget* parent) : QWidget(parent) {
                                              [=]() {
                                                if (ConfirmationDialog::confirm("Are you sure you want to reset calibration?")) {
                                                  Params().delete_db_value("CalibrationParams");
+                                               }
+                                             }));
+
+  device_layout->addWidget(horizontal_line());
+
+  device_layout->addWidget(new ButtonControl("Review Training Guide", "REVIEW",
+                                             "Review the rules, features, and limitations of openpilot",
+                                             [=]() {
+                                               if (ConfirmationDialog::confirm("Are you sure you want to review the training guide?")) {
+                                                 Params().delete_db_value("CompletedTrainingVersion");
+                                                 emit reviewTrainingGuide();
                                                }
                                              }));
 
@@ -225,7 +240,7 @@ SettingsWindow::SettingsWindow(QWidget *parent) : QFrame(parent) {
   // setup two main layouts
   QVBoxLayout *sidebar_layout = new QVBoxLayout();
   sidebar_layout->setMargin(0);
-  panel_layout = new QStackedLayout();
+  panel_widget = new QStackedWidget();
 
   // close button
   QPushButton *close_btn = new QPushButton("X");
@@ -242,8 +257,11 @@ SettingsWindow::SettingsWindow(QWidget *parent) : QFrame(parent) {
   QObject::connect(close_btn, SIGNAL(released()), this, SIGNAL(closeSettings()));
 
   // setup panels
+  DevicePanel *device = new DevicePanel(this);
+  QObject::connect(device, SIGNAL(reviewTrainingGuide()), this, SIGNAL(reviewTrainingGuide()));
+
   QPair<QString, QWidget *> panels[] = {
-    {"Device", new DevicePanel(this)},
+    {"Device", device},
     {"Network", network_panel(this)},
     {"Toggles", toggles_panel()},
     {"Developer", new DeveloperPanel()},
@@ -272,9 +290,9 @@ SettingsWindow::SettingsWindow(QWidget *parent) : QFrame(parent) {
     nav_btns->addButton(btn);
     sidebar_layout->addWidget(btn, 0, Qt::AlignRight);
 
-    panel_layout->addWidget(panel);
+    panel_widget->addWidget(panel);
     QObject::connect(btn, &QPushButton::released, [=, w = panel]() {
-      panel_layout->setCurrentWidget(w);
+      panel_widget->setCurrentWidget(w);
     });
   }
   qobject_cast<QPushButton *>(nav_btns->buttons()[0])->setChecked(true);
@@ -288,19 +306,24 @@ SettingsWindow::SettingsWindow(QWidget *parent) : QFrame(parent) {
   sidebar_widget->setFixedWidth(500);
   settings_layout->addWidget(sidebar_widget);
 
-
-  panel_frame = new QFrame;
-  panel_frame->setLayout(panel_layout);
+  panel_frame = new QScrollArea;
+  panel_frame->setWidget(panel_widget);
+  panel_frame->setWidgetResizable(true);
+  panel_frame->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+  panel_frame->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
   panel_frame->setStyleSheet(R"(
-    QFrame {
-      border-radius: 30px;
-      background-color: #292929;
-    }
-    * {
-      background-color: none;
-    }
+    border-radius: 30px;
+    background-color: #292929;
   )");
   settings_layout->addWidget(panel_frame);
+
+  // setup panel scrolling
+  QScroller *scroller = QScroller::scroller(panel_frame);
+  auto sp = scroller->scrollerProperties();
+  sp.setScrollMetric(QScrollerProperties::FrameRate, QVariant::fromValue<QScrollerProperties::FrameRates>(QScrollerProperties::Fps30));
+  sp.setScrollMetric(QScrollerProperties::VerticalOvershootPolicy, QVariant::fromValue<QScrollerProperties::OvershootPolicy>(QScrollerProperties::OvershootAlwaysOff));
+  scroller->setScrollerProperties(sp);
+  scroller->grabGesture(panel_frame->viewport(), QScroller::LeftMouseButtonGesture);
 
   setLayout(settings_layout);
   setStyleSheet(R"(
