@@ -1,4 +1,5 @@
 from cereal import car
+from selfdrive.config import Conversions as CV
 from selfdrive.swaglog import cloudlog
 from selfdrive.car.volkswagen.values import CAR, PQ_CARS, BUTTON_STATES, TransmissionType, GearShifter
 from selfdrive.car import STD_CARGO_KG, scale_rot_inertia, scale_tire_stiffness, gen_empty_fingerprint
@@ -73,6 +74,7 @@ class CarInterface(CarInterfaceBase):
       # Averages of all 1K/5K/AJ Golf variants
       ret.mass = 1379 + STD_CARGO_KG
       ret.wheelbase = 2.58
+      ret.minSteerSpeed = 50 * CV.MPH_TO_MS  # May be higher/lower depending on model-year
 
     elif candidate == CAR.GOLF_MK7:
       # Averages of all AU Golf variants
