@@ -91,8 +91,6 @@ def create_pq_hud_control(packer, bus, hca_enabled, steering_pressed, hud_alert,
   }
   return packer.make_can_msg("LDW_1", bus, values)
 
-pass
-
 def create_pq_acc_buttons_control(packer, bus, buttonStatesToSend, CS, idx):
   values = {
     "GRA_Neu_Zaehler": idx,
