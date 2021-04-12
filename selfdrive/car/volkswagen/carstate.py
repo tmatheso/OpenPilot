@@ -217,6 +217,11 @@ class CarState(CarStateBase):
 
     # TODO: Consume blind spot data from factory radar, if present
     # TODO: Consume lane departure data from factory camera, if present
+    self.ldw_lane_warning_left = False
+    self.ldw_lane_warning_right = False
+    self.ldw_side_dlc_tlc = None
+    self.ldw_dlc = None
+    self.ldw_tlc = None
     # TODO: Consume FCW/AEB data from factory radar, if present
 
     # Update ACC radar status.
