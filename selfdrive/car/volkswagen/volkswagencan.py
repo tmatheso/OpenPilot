@@ -54,12 +54,6 @@ def create_mqb_acc_buttons_control(packer, bus, buttonStatesToSend, CS, idx):
   }
   return packer.make_can_msg("GRA_ACC_01", bus, values, idx)
 
-# ----------------------------------------------------------------------- #
-#                                                                         #
-# CAN message packing for PQ35/PQ46/NMS vehicles                          #
-#                                                                         #
-# ----------------------------------------------------------------------- #
-
 def create_pq_steering_control(packer, bus, apply_steer, idx, lkas_enabled):
   values = {
     "HCA_Zaehler": idx,
