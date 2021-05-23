@@ -143,7 +143,7 @@ class CarState(CarStateBase):
 
     # Check to make sure the electric power steering rack is configured to
     # accept and respond to HCA_01 messages and has not encountered a fault.
-    self.steeringFault = not pt_cp.vl["LH_EPS_03"]["EPS_HCA_Status"]
+    self.steeringFault = pt_cp.vl["LH_EPS_03"]["EPS_HCA_Status"] not in [3, 5]
 
     # Additional safety checks performed in CarInterface.
     self.parkingBrakeSet = bool(pt_cp.vl["Kombi_01"]['KBI_Handbremse'])  # FIXME: need to include an EPB check as well
