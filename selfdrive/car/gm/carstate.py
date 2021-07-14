@@ -44,9 +44,9 @@ class CarState(CarStateBase):
     ret.steeringPressed = abs(ret.steeringTorque) > STEER_THRESHOLD
 
     # 0 inactive, 1 active, 2 temporarily limited, 3 failed
-    lkas_status = pt_cp.vl["PSCMStatus"]["LKATorqueDeliveredStatus"]
-    ret.steerWarning = lkas_status == 2
-    ret.steerError = lkas_status == 3
+    self.lkas_status = pt_cp.vl["PSCMStatus"]["LKATorqueDeliveredStatus"]
+    ret.steerWarning = self.lkas_status == 2
+    ret.steerError = self.lkas_status == 3
 
     # 1 - open, 0 - closed
     ret.doorOpen = (pt_cp.vl["BCMDoorBeltStatus"]["FrontLeftDoor"] == 1 or
