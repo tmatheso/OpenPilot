@@ -14,7 +14,7 @@ class CarController():
   def __init__(self, dbc_name, CP, VM):
     self.start_time = 0.
     self.apply_steer_last = 0
-    self.lka_icon_status_last = (False, False)
+    #self.lka_icon_status_last = (False, False)
     self.steer_rate_limited = False
 
     self.params = CarControllerParams()
@@ -96,12 +96,12 @@ class CarController():
     # alarming orange icon when approaching torque limit.
     # If not sent again, LKA icon disappears in about 5 seconds.
     # Conveniently, sending camera message periodically also works as a keepalive.
-    lka_active = CS.lkas_status == 1
-    lka_critical = lka_active and abs(actuators.steer) > 0.9
-    lka_icon_status = (lka_active, lka_critical)
-    if frame % P.CAMERA_KEEPALIVE_STEP == 0 or lka_icon_status != self.lka_icon_status_last:
-      steer_alert = hud_alert in [VisualAlert.steerRequired, VisualAlert.ldw]
-      can_sends.append(gmcan.create_lka_icon_command(CanBus.SW_GMLAN, lka_active, lka_critical, steer_alert))
-      self.lka_icon_status_last = lka_icon_status
+    #lka_active = CS.lkas_status == 1
+    #lka_critical = lka_active and abs(actuators.steer) > 0.9
+    #lka_icon_status = (lka_active, lka_critical)
+    #if frame % P.CAMERA_KEEPALIVE_STEP == 0 or lka_icon_status != self.lka_icon_status_last:
+    #  steer_alert = hud_alert in [VisualAlert.steerRequired, VisualAlert.ldw]
+    #  can_sends.append(gmcan.create_lka_icon_command(CanBus.SW_GMLAN, lka_active, lka_critical, steer_alert))
+    #  self.lka_icon_status_last = lka_icon_status
 
     return can_sends

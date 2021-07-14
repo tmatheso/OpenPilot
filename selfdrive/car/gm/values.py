@@ -19,7 +19,7 @@ class CarControllerParams():
     # Takes case of "Service Adaptive Cruise" and "Service Front Camera"
     # dashboard messages.
     self.ADAS_KEEPALIVE_STEP = 100
-    self.CAMERA_KEEPALIVE_STEP = 100
+    #self.CAMERA_KEEPALIVE_STEP = 100
 
     # pedal lookups, only for Volt
     MAX_GAS = 3072              # Only a safety limit
@@ -57,7 +57,7 @@ class CanBus:
   POWERTRAIN = 0
   OBSTACLE = 1
   CHASSIS = 2
-  SW_GMLAN = 3
+  #SW_GMLAN = 3
 
 FINGERPRINTS = {
   # Astra BK MY17, ASCM unplugged
