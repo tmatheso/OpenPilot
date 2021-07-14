@@ -69,7 +69,7 @@ class CarState(CarStateBase):
     if self.car_fingerprint == CAR.VOLT:
       ret.brakePressed = ret.brakePressed or bool(pt_cp.vl["EBCMRegenPaddle"]["RegenPaddle"])
 
-    ret.cruiseState.enabled = self.pcm_acc_status != AccState.OFF
+    ret.cruiseState.enabled = self.pcm_acc_status in [AccState.ACTIVE, AccState.STANDSTILL]
     ret.cruiseState.standstill = self.pcm_acc_status == AccState.STANDSTILL
 
     return ret
