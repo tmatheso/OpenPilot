@@ -244,7 +244,7 @@ void can_recv_thread() {
       if (ignition) {
         LOGW("missed cycles (%d) %lld", (int)-1*remaining/dt, remaining);
       }
-      // next_frame_time = cur_time;
+      next_frame_time = cur_time;
     }
 
     next_frame_time += dt;
