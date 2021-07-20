@@ -34,6 +34,7 @@ class CarInterface(CarInterfaceBase):
     if True:  # pylint: disable=using-constant-test
       # Set global MQB parameters
       ret.safetyModel = car.CarParams.SafetyModel.volkswagen
+      ret.hasStockCamera = 0x318 in fingerprint[0] or 0x397 in fingerprint[0]  # Kamera_Status or LDW_02
       ret.enableBsm = 0x30F in fingerprint[0]
 
       if 0xAD in fingerprint[0]:  # Getriebe_11

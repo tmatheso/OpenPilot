@@ -82,13 +82,9 @@ class CarState(CarStateBase):
       ret.leftBlindspot = bool(ext_cp.vl["SWA_01"]["SWA_Infostufe_SWA_li"]) or bool(ext_cp.vl["SWA_01"]["SWA_Warnung_SWA_li"])
       ret.rightBlindspot = bool(ext_cp.vl["SWA_01"]["SWA_Infostufe_SWA_re"]) or bool(ext_cp.vl["SWA_01"]["SWA_Warnung_SWA_re"])
 
-    # Consume factory LDW data relevant for factory SWA (Lane Change Assist)
+    # Consume all factory LDW data relevant for factory SWA (Lane Change Assist)
     # and capture it for forwarding to the blind spot radar controller
-    self.ldw_lane_warning_left = bool(cam_cp.vl["LDW_02"]["LDW_SW_Warnung_links"])
-    self.ldw_lane_warning_right = bool(cam_cp.vl["LDW_02"]["LDW_SW_Warnung_rechts"])
-    self.ldw_side_dlc_tlc = bool(cam_cp.vl["LDW_02"]["LDW_Seite_DLCTLC"])
-    self.ldw_dlc = cam_cp.vl["LDW_02"]["LDW_DLC"]
-    self.ldw_tlc = cam_cp.vl["LDW_02"]["LDW_TLC"]
+    self.ldw_factory_msg = cam_cp.vl["LDW_02"] if self.CP.hasStockCamera else None
 
     # Stock FCW is considered active if the release bit for brake-jerk warning
     # is set. Stock AEB considered active if the partial braking or target
@@ -234,20 +230,12 @@ class CarState(CarStateBase):
 
   @staticmethod
   def get_cam_can_parser(CP):
+    signals = []
+    checks = []
 
-    signals = [
-      # sig_name, sig_address, default
-      ("LDW_SW_Warnung_links", "LDW_02", 0),          # Blind spot in warning mode on left side due to lane departure
-      ("LDW_SW_Warnung_rechts", "LDW_02", 0),         # Blind spot in warning mode on right side due to lane departure
-      ("LDW_Seite_DLCTLC", "LDW_02", 0),              # Direction of most likely lane departure (left or right)
-      ("LDW_DLC", "LDW_02", 0),                       # Lane departure, distance to line crossing
-      ("LDW_TLC", "LDW_02", 0),                       # Lane departure, time to line crossing
-    ]
-
-    checks = [
-      # sig_address, frequency
-      ("LDW_02", 10)        # From R242 Driver assistance camera
-    ]
+    if CP.hasStockCamera:
+      signals += MqbExtraSignals.fwd_camera_signals
+      checks += MqbExtraSignals.fwd_camera_checks
 
     if CP.networkLocation == NetworkLocation.gateway:
       # Radars are here on CANBUS.cam
@@ -261,6 +249,16 @@ class CarState(CarStateBase):
 
 class MqbExtraSignals:
   # Additional signal and message lists for optional or bus-portable controllers
+  fwd_camera_signals = [
+    ("LDW_SW_Warnung_links", "LDW_02", 0),          # BSM in warning mode on left side due to lane departure
+    ("LDW_SW_Warnung_rechts", "LDW_02", 0),         # BSM in warning mode on right side due to lane departure
+    ("LDW_Seite_DLCTLC", "LDW_02", 0),              # Direction of most likely lane departure (left or right)
+    ("LDW_DLC", "LDW_02", 0),                       # Lane departure, distance to line crossing
+    ("LDW_TLC", "LDW_02", 0),                       # Lane departure, time to line crossing
+  ]
+  fwd_camera_checks = [
+    ("LDW_02", 10)                                  # From R242 Driver assistance camera
+  ]
   fwd_radar_signals = [
     ("ACC_Wunschgeschw", "ACC_02", 0),              # ACC set speed
     ("AWV2_Freigabe", "ACC_10", 0),                 # FCW brake jerk release
