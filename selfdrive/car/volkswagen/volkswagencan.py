@@ -32,13 +32,8 @@ def create_mqb_hud_control(packer, bus, enabled, steering_pressed, hud_alert, le
   }
 
   if ldw_factory_msg is not None:
-    values += {
-      "LDW_SW_Warnung_links": ldw_factory_msg["LDW_SW_Warnung_links"],
-      "LDW_SW_Warnung_rechts": ldw_factory_msg["LDW_SW_Warnung_rechts"],
-      "LDW_Seite_DLCTLC": ldw_factory_msg["LDW_Seite_DLCTLC"],
-      "LDW_DLC": ldw_factory_msg["LDW_DLC"],
-      "LDW_TLC": ldw_factory_msg["LDW_TLC"]
-    }
+    for signal in ["LDW_SW_Warnung_links", "LDW_SW_Warnung_rects", "LDW_Seite_DLCTLC", "LDW_DLC", "LDW_TLC"]:
+      values[signal] = ldw_factory_msg[signal]
 
   return packer.make_can_msg("LDW_02", bus, values)
 
