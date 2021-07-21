@@ -69,18 +69,19 @@ class CarInterfaceBase():
     ret.steerMaxV = [1.]
     ret.minSteerSpeed = 0.
 
-    ret.pcmCruise = True     # openpilot's state is tied to the PCM's cruise state on most cars
-    ret.minEnableSpeed = -1. # enable is done by stock ACC, so ignore this
-    ret.steerRatioRear = 0.  # no rear steering, at least on the listed cars aboveA
+    ret.pcmCruise = True  # openpilot's state is tied to the PCM's cruise state on most cars
+    ret.hasStockCamera = True  # car has a factory LKAS camera, true for most supported cars
+    ret.minEnableSpeed = -1.  # enable is done by stock ACC, so ignore this
+    ret.steerRatioRear = 0.  # no rear steering, at least on the listed cars above
     ret.gasMaxBP = [0.]
-    ret.gasMaxV = [.5]       # half max brake
+    ret.gasMaxV = [.5]  # half max brake
     ret.brakeMaxBP = [0.]
     ret.brakeMaxV = [1.]
     ret.openpilotLongitudinalControl = False
     ret.startAccel = 0.0
     ret.minSpeedCan = 0.3
-    ret.stoppingBrakeRate = 0.2 # brake_travel/s while trying to stop
-    ret.startingBrakeRate = 0.8 # brake_travel/s while releasing on restart
+    ret.stoppingBrakeRate = 0.2  # brake_travel/s while trying to stop
+    ret.startingBrakeRate = 0.8  # brake_travel/s while releasing on restart
     ret.stoppingControl = True
     ret.longitudinalTuning.deadzoneBP = [0.]
     ret.longitudinalTuning.deadzoneV = [0.]
