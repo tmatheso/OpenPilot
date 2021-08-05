@@ -10,7 +10,7 @@ common_src = [
   "transforms/transform.c"]
 
 if arch == "aarch64":
-  libs += ['gsl', 'CB', 'gnustl_shared']
+  libs += ['gsl', 'CB', 'gnustl_shared', 'symphonypower', 'symphony-cpu', 'pthread']
 else:
   libs += ['symphony-cpu', 'pthread']
 
