@@ -1,8 +1,10 @@
+#!/usr/bin/bash
 VERSION=0.6.1
 
 mount -o rw,remount /
 mount -o rw,remount /system
 cd /tmp
+rm -rf capnproto-c++-${VERSION}
 wget --tries=inf https://capnproto.org/capnproto-c++-${VERSION}.tar.gz
 tar xvf capnproto-c++-${VERSION}.tar.gz
 
@@ -14,6 +16,7 @@ CXXFLAGS="-fPIC -O2" ./configure --prefix=/usr
 make -j4 install
 popd
 
+rm -rf c-capnproto
 git clone https://github.com/commaai/c-capnproto.git
 pushd c-capnproto
 git submodule update --init --recursive

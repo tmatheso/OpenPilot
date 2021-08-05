@@ -84,6 +84,11 @@ function launch {
   ln -sfn $(pwd) /data/pythonpath
   export PYTHONPATH="$PWD"
 
+  # install old capnp if required
+  if [ ! -f /usr/local/bin/capnpc-c ]; then
+    scripts/on_first_boot.py
+  fi
+
   # start manager
   cd selfdrive
   ./manager.py
