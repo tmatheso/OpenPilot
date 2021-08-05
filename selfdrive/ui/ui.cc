@@ -49,8 +49,8 @@ static void set_awake(UIState *s, bool awake) {
     } else {
       LOGW("awake off");
       set_brightness(s, 0);
-      system("service call window 18 i32 0");  // disable event processing
-      framebuffer_set_power(s->fb, HWC_POWER_MODE_OFF);
+      //system("service call window 18 i32 0");  // disable event processing
+      //framebuffer_set_power(s->fb, HWC_POWER_MODE_OFF);
     }
   }
 #else
