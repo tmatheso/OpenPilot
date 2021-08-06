@@ -334,13 +334,13 @@ def cleanup_all_processes(signal, frame):
 
 # ****************** run loop ******************
 
-def manager_init(should_register=False):
+def manager_init(should_register=True):
   if should_register:
     reg_res = register()
     if reg_res:
       dongle_id, dongle_secret = reg_res
     else:
-      raise Exception("server registration failed")
+      dongle_id, dongle_secret = "c"*16, None
   else:
     dongle_id = "c"*16
 
