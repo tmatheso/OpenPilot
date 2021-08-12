@@ -295,7 +295,7 @@ def thermald_thread():
 ##        alert_connectivity_prompt["text"] += remaining_time + " days."
 ##        params.delete("Offroad_ConnectivityNeeded")
 ##        params.put("Offroad_ConnectivityNeededPrompt", json.dumps(alert_connectivity_prompt))
-    elif current_connectivity_alert is not None:
+##    elif current_connectivity_alert is not None:
       current_connectivity_alert = None
       params.delete("Offroad_ConnectivityNeeded")
       params.delete("Offroad_ConnectivityNeededPrompt")
