@@ -270,14 +270,18 @@ def thermald_thread():
     if not time_valid and time_valid_prev:
       params.put("Offroad_InvalidTime", json.dumps(OFFROAD_ALERTS["Offroad_InvalidTime"]))
     time_valid_prev = time_valid
+    last_update = now
+    dt = now
+    update_failed_count = 0
+    current_connectivity_alert = None
+    params.delete("Offroad_ConnectivityNeeded")
+    params.delete("Offroad_ConnectivityNeededPrompt")
 
     # Show update prompt
 ##    try:
 ##      last_update = datetime.datetime.fromisoformat(params.get("LastUpdateTime", encoding='utf8'))
 ##    except (TypeError, ValueError):
-    last_update = now
-    dt = now
-    update_failed_count = 0
+
 ##
 ##    update_failed_count = params.get("UpdateFailedCount")
 ##    update_failed_count = 0 if update_failed_count is None else int(update_failed_count)
@@ -296,9 +300,7 @@ def thermald_thread():
 ##        params.delete("Offroad_ConnectivityNeeded")
 ##        params.put("Offroad_ConnectivityNeededPrompt", json.dumps(alert_connectivity_prompt))
 ##    elif current_connectivity_alert is not None:
-      current_connectivity_alert = None
-      params.delete("Offroad_ConnectivityNeeded")
-      params.delete("Offroad_ConnectivityNeededPrompt")
+
 
     # start constellation of processes when the car starts
     ignition = health is not None and (health.health.ignitionLine or health.health.ignitionCan)
