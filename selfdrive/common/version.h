@@ -1,1 +1,1 @@
-#define COMMA_VERSION "0.7.4-VW1.3"
+#define COMMA_VERSION "v1.0-TaylorM"
