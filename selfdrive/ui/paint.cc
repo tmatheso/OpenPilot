@@ -34,6 +34,10 @@ const int alert_sizes[] = {
   [ALERTSIZE_FULL] = vwp_h,
 };
 
+// for minimal UI
+float angleSteersDes;
+float angleSteers;
+
 // Projects a point in car to space to the corresponding point in full frame
 // image space.
 vec3 car_space_to_full_frame(const UIState *s, vec4 car_space_projective) {
@@ -275,7 +279,7 @@ static void draw_steering(UIState *s, float curvature) {
     points[i] = y_actual;
   }
 
-  // ui_draw_lane_edge(s, points, 0.0, nvgRGBA(0, 0, 255, 128), 5);
+  //ui_draw_lane_edge(s, points, 0.0, nvgRGBA(0, 0, 255, 128), 5);
 }
 
 static void draw_frame(UIState *s) {
@@ -742,13 +746,13 @@ static void ui_draw_vision_header(UIState *s) {
   nvgRect(s->vg, ui_viz_rx, box_y, ui_viz_rw, header_h);
   nvgFill(s->vg);
 
-  ui_draw_vision_maxspeed(s);
+  //ui_draw_vision_maxspeed(s);
 
 #ifdef SHOW_SPEEDLIMIT
-  ui_draw_vision_speedlimit(s);
+  //ui_draw_vision_speedlimit(s);
 #endif
   ui_draw_vision_speed(s);
-  ui_draw_vision_event(s);
+  //ui_draw_vision_event(s);
 }
 
 static void ui_draw_vision_footer(UIState *s) {
@@ -759,7 +763,7 @@ static void ui_draw_vision_footer(UIState *s) {
   nvgBeginPath(s->vg);
   nvgRect(s->vg, ui_viz_rx, footer_y, ui_viz_rw, footer_h);
 
-  ui_draw_vision_face(s);
+  //ui_draw_vision_face(s);
 
 #ifdef SHOW_SPEEDLIMIT
   // ui_draw_vision_map(s);
