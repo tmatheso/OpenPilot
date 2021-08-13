@@ -34,9 +34,6 @@ const int alert_sizes[] = {
   [ALERTSIZE_FULL] = vwp_h,
 };
 
-// for minimal UI
-float angleSteersDes;
-float angleSteers;
 
 // Projects a point in car to space to the corresponding point in full frame
 // image space.
